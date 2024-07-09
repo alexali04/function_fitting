@@ -3,7 +3,7 @@ from typing import List, Callable
 
 
 
-class MLP(nn.Module):
+class BasicMLP(nn.Module):
     def __init__(self, layer_sizes: List[int], activation: Callable):
         """
         defines computational graph

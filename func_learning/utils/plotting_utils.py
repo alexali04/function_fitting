@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Optional
+from typing import Optional, Union
 import matplotlib.pyplot as plt
 import os
 import logging
@@ -77,9 +77,10 @@ def plot_labels_and_predictions(
     
     plt.close()
 
+
 def extract_num(
     filename: str
-) -> int | float:
+) -> Union[int, float]:
     """
     Extracts number from filename
     """

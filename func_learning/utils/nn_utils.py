@@ -2,14 +2,13 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from typing import List, Callable, Any
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader
 import numpy as np
 import logging
 
-from utils.plotting_utils import (
+from func_learning.utils.plotting_utils import (
     plot_labels_and_predictions
 )
-
 
 
 def train_model(
@@ -33,7 +32,7 @@ def train_model(
     """
 
     loss_func = criterion()
-    optimizer = optim.AdamW(model.parameters(), lr=0.001)
+    optimizer = optim.AdamW(model.parameters(), lr=1e-3)
 
     for epoch in range(n_epochs):
 
@@ -51,9 +50,8 @@ def train_model(
 
             training_loss += loss.item()            # Aggregating batch loss  
 
-
+        model.eval()                                    # Disables train-only features (i.e. dropout)
         if plot:    
-
             X_plot_vals = np.linspace(domain_start, domain_end, 5000)
             y_plot_vals = func_to_learn(X_plot_vals)
             y_pred_vals = model(torch.tensor(X_plot_vals, dtype=torch.float32).unsqueeze(1)).detach().numpy().flatten()
@@ -69,12 +67,12 @@ def train_model(
                 show_image=False,
                 sample_limit=4000,
                 save_fig=True,
-                
+                static_range=True,
+                y_low=plot_range[0],
+                y_high=plot_range[1],
             )
-        
 
         # Validating model
-        model.eval()                                    # Disables train-only features (i.e. dropout)
         with torch.no_grad():                           # Turn off gradient computations
             for X_val, y_val in val_loader:
                 y_val_pred = model(X_val)                      
@@ -84,6 +82,7 @@ def train_model(
             if epoch % 100 == 0:
                 print(f"{epoch} Batch Training Loss: {training_loss / len(train_loader)}")
                 print(f"{epoch} Batch Validation Loss: {val_loss / len(val_loader)}")
+
 
 def evaluate_model_on_test_set(
     model: nn.Module, 

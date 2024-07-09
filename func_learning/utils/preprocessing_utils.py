@@ -1,7 +1,7 @@
 import numpy as np
 from torch.utils.data import DataLoader, TensorDataset
 import torch
-from typing import Callable
+from typing import Callable, Tuple
 
 def prep_data(
     X: np.array, 
@@ -23,7 +23,7 @@ def gen_function_values(
     start: float,
     end: float,
     num_samples: int
-):
+) -> Tuple[np.ndarray]:
     """
     This applies function to a num_samples input values between start and end and returns [input, outputs]
     """
