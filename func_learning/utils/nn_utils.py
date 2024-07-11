@@ -32,7 +32,7 @@ def train_model(
     """
 
     loss_func = criterion()
-    optimizer = optim.AdamW(model.parameters(), lr=1e-3)
+    optimizer = optim.AdamW(model.parameters(), lr=1e-4)
 
     for epoch in range(n_epochs):
 

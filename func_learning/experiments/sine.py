@@ -31,12 +31,13 @@ from func_learning.utils.plotting_utils import (
 
 # initialize models
 #deep_learner = BasicMLP([1] + [2] * 10 + [1], nn.ReLU)
-wide_learner = BasicMLP([1] + [10] * 2 + [1], nn.ReLU)
+wide_learner = BasicMLP([1, 10, 10, 1], nn.ReLU)
 print(wide_learner)
 
 # constants
 FUNC_TO_LEARN = np.sin
 PATH_TO_WRITE = "func_learning/experiments/experiment_images/sin_images"
+os.makedirs(PATH_TO_WRITE, exist_ok=True)
 
 X_train, y_train = gen_function_values(
     function=FUNC_TO_LEARN,
@@ -86,7 +87,7 @@ train_model(
 
 make_gif(
     folder=PATH_TO_WRITE,
-    name="wide_sine_big_domain_low_lr",
+    name="wide_wide_sine_big_domain_lower_lr",
     fps=10
 )
 
