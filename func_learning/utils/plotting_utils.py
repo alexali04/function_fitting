@@ -49,3 +49,17 @@ def plot(y_pred, x, y, id, FOLDER):
     ax.set_aspect('equal', adjustable="box")
     plt.savefig(f"{FOLDER}/{str(id)}.png")
     plt.close()
+
+
+def plot_scatter(y_pred, x, y, id, FOLDER):
+    plt.figure()
+
+    plt.scatter(x.numpy(), y.numpy(), label="Targets")
+    plt.scatter(x.numpy(), y_pred.detach().numpy(), label="Predictions")
+    plt.legend()
+    ax = plt.gca()
+    ax.set_xlim(0, 5)
+    ax.set_ylim(0, 6)
+    ax.set_aspect('equal', adjustable="box")
+    plt.savefig(f"{FOLDER}/{str(id)}.png")
+    plt.close()
