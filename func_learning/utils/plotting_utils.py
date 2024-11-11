@@ -111,4 +111,16 @@ def make_gif(
                 writer.append_data(image)
 
         
+ 
+
+def plot(x_inp, y_pred, x, y, id, FOLDER):
     
+    plt.figure()
+    plt.plot(x.numpy(), y.numpy(), label="targets")
+    plt.plot(x_inp.detach().numpy(), y_pred.detach().numpy(), label="predictions")
+    ax = plt.gca()
+    ax.set_xlim(0, 5)
+    ax.set_ylim(0, 5)
+    ax.set_aspect('equal', adjustable="box")
+    plt.savefig(f"{FOLDER}/{str(id)}.png")
+    plt.close()
