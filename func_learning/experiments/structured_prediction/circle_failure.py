@@ -1,7 +1,8 @@
 import os
 import sys
 import torch.nn as nn
-from torch.optim import Adam
+from torch.optim import SGD
+import torch
 
 module_path = os.path.abspath(os.path.join('.'))
 if module_path not in sys.path:
@@ -13,7 +14,7 @@ from func_learning.utils.train_utils import (
 )
 
 from func_learning.utils.data_utils import (
-    CircleDataset, generate_circle_data
+    generate_circle_data
 )
 
 from func_learning.model_classes.base_nn import (
@@ -27,12 +28,12 @@ from func_learning.utils.plotting_utils import (
 FOLDER = "func_learning/images/struc_pred"
 os.makedirs(FOLDER, exist_ok=True)
 
-circle_model = ANN()
-optimizer = Adam(circle_model.parameters(), lr=0.001)
+circle_model = ANN(activation=torch.sin)
+optimizer = SGD(circle_model.parameters(), lr=0.01)
 loss = nn.MSELoss()
 
-dataset, x_true, y_true = generate_circle_data()
+x_train, y_train = generate_circle_data()
 
-simple_train_gif(circle_model, x_true, y_true, dataset, loss, optimizer, 10, FOLDER)
-make_gif(folder=FOLDER, name="circle_learning", fps=2)
+simple_train_gif(circle_model, x_train, y_train, loss, optimizer, 100, FOLDER)
+make_gif(folder=FOLDER, name="circle_learning", fps=3)
 

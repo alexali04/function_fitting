@@ -1,108 +1,52 @@
-"""Experiment - Breadth vs Depth"""
+"""Experiment - Breadth vs Depth
 
-import torch.nn as nn
-import numpy as np
+
+Learned: 
+When training on toy datasets, it's better to not use data
+
+"""
+
 import os
 import sys
+import torch.nn as nn
+from torch.optim import SGD
+import torch
 
 module_path = os.path.abspath(os.path.join('.'))
 if module_path not in sys.path:
     sys.path.append(module_path)
     print(module_path)
 
+from func_learning.utils.train_utils import (
+    simple_train_gif
+)
+
+from func_learning.utils.data_utils import (
+    generate_cos_data
+)
 
 from func_learning.model_classes.base_nn import (
-    BasicMLP
-)
-
-from func_learning.utils.preprocessing_utils import (
-    gen_function_values, 
-    prep_data
-)
-
-from func_learning.utils.train_utils import (
-    train_model_with_description_and_plot,
-    evaluate_model_on_test_set
+    ANN
 )
 
 from func_learning.utils.plotting_utils import (
     make_gif
 )
 
-# initialize models
-#deep_learner = BasicMLP([1] + [2] * 10 + [1], nn.ReLU)
-wide_learner = BasicMLP([1, 10, 10, 1], nn.ReLU)
-print(wide_learner)
+FOLDER = "func_learning/images/sine_images"
+os.makedirs(FOLDER, exist_ok=True)
 
-# constants
-FUNC_TO_LEARN = np.sin
-PATH_TO_WRITE = "func_learning/experiments/experiment_images/sin_images"
-os.makedirs(PATH_TO_WRITE, exist_ok=True)
+sin_model = ANN(activation=torch.sin)
+optimizer = SGD(sin_model.parameters(), lr=0.01)
+loss = nn.MSELoss()
 
-X_train, y_train = gen_function_values(
-    function=FUNC_TO_LEARN,
-    start=-100,
-    end=100,
-    num_samples=100000
-)
+x_train, y_train = generate_cos_data()
 
-X_val, y_val = gen_function_values(
-    function=FUNC_TO_LEARN,
-    start=-150,
-    end=-100,
-    num_samples=10000
-)
+simple_train_gif(sin_model, x_train, y_train, loss, optimizer, 150, FOLDER)
+make_gif(folder=FOLDER, name="cos_learning", fps=3)
 
-X_test, y_test = gen_function_values(
-    function=FUNC_TO_LEARN,
-    start=100,
-    end=150,
-    num_samples=10000
-)
 
-train_loader = prep_data(
-    X=X_train,
-    y=y_train
-)
 
-val_loader = prep_data(
-    X=X_val,
-    y=y_val
-)
-
-train_model_with_description_and_plot(
-    model=wide_learner,
-    criterion=nn.MSELoss,
-    n_epochs=1000,
-    train_loader=train_loader,
-    val_loader=val_loader,
-    function_description="sin(x)",
-    func_to_learn=FUNC_TO_LEARN,
-    folder=PATH_TO_WRITE,
-    domain_start=-150,
-    domain_end=150,
-    plot_range=[-5, 5],
-    plot=True
-)
-
-make_gif(
-    folder=PATH_TO_WRITE,
-    name="wide_wide_sine_big_domain_lower_lr",
-    fps=10
-)
-
-loss = evaluate_model_on_test_set(
-    model=wide_learner,
-    X_test=X_test,
-    y_test=y_test,
-    loss_func=nn.MSELoss,
-    loss_func_description="Mean Squared Error",
-    func_description="sin(x)",
-    folder=None,
-    plot=False
-)
-
-print(loss)
 
 
 

@@ -1,33 +1,39 @@
-from torch.utils.data import DataLoader, Dataset
+import numpy as np
 import torch
 
-
-class CircleDataset(Dataset):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __len__(self):
-        return len(self.x)
-
-    def __getitem__(self, idx):
-        return self.x[idx], self.y[idx]
-
 def generate_circle_data(
-    num_points: int = 1000,
-    low: float = -5.0,
-    high: float = 5.0
+    num_points: int = 5000,
+    low: float = 0.0,
+    high: float = 10.0
     ):
     """
     Function is (sin(t) + 3, cos(t) + 3)
     """
 
-    t = torch.linspace(low, high, num_points, dtype=torch.float32)    # 3rd argument cannot be int
-    x = torch.sin(t) + 3.0
-    y = torch.cos(t) + 3.0
+    t = np.linspace(-10, 10, 1000).reshape(-1, 1).astype(np.float32)
+    x_train = (np.sin(t) + 3.0).astype(np.float32)
+    y_train = (np.cos(t) + 3.0).astype(np.float32)
+
+
+    x_train_tensor = torch.from_numpy(x_train)
+    y_train_tensor = torch.from_numpy(y_train)
     
+    return x_train_tensor, y_train_tensor
 
-    domain_dataset = CircleDataset(x, y)
-    domain_dataloader = DataLoader(domain_dataset, batch_size=64, shuffle=True)
 
-    return domain_dataloader, x, y
+def generate_cos_data(
+    num_points: int = 5000,
+    low: float = 0.0,
+    high: float = 10.0
+    ):
+    """
+    Function is (sin(t) + 3, cos(t) + 3)
+    """
+
+    x_train = np.linspace(-10, 10, 1000).reshape(-1, 1).astype(np.float32)
+    y_train = (2.0 * np.cos(x_train) + 3.0).astype(np.float32)
+
+    x_train_tensor = torch.from_numpy(x_train)
+    y_train_tensor = torch.from_numpy(y_train)
+    
+    return x_train_tensor, y_train_tensor
